@@ -1,0 +1,98 @@
+{% extends 'superapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profile Page{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Account Information</h5>
+                        <hr>
+                        <div class="text-left"> <!-- Add text-left class to align the content to the left -->
+                            <strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}<br>
+                            <strong>Username:</strong> {{ user.username }}<br>
+                            <strong>Email:</strong> {{ user.email }}<br>
+                            <strong>Joined:</strong> {{ user.date_joined|date:"F d, Y" }}<br>
+                        </div>
+                        <small class="text-center"> <!-- Keep the logout link centered -->
+                            <a href="{% url 'logout' %}" class="link-unstyled">Logout</a>
+                        </small>
+                    </div>
+                </div>
+                
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">My Bets</h5>
+                        <hr>
+                        {% if user_bets %}
+                            {% for bet in user_bets %}
+                                <p>
+                                    <span>{{ bet.game.home_team }} vs {{ bet.game.away_team }}</span><br>
+                                    <span>Bet on: {{ bet.team.name }}</span><br>
+                                    <span>Bet amount: {{ bet.bet_amount }}</span><br>
+                                    {% if bet.game.score %}
+                                        {% if bet.result is not None %}
+                                            {% if bet.result %}
+                                                <span class="text-success">Result: Won</span><br>
+                                            {% else %}
+                                                <span class="text-danger">Result: Lost</span><br>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-info">Result: Game played, result pending</span><br>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-info">Result: Game not yet played</span><br>
+                                    {% endif %}
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            <p>No bets placed</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+
+
+        </div>
+    </div>
+
+
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        
+        .link-unstyled {
+            color: white;
+            text-decoration: none;
+            text-decoration: underline;
+        }
+        .link-unstyled:hover {
+            color: black;
+            text-decoration: none;
+            text-decoration: underline;
+        }
+        .content-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+        }
+        .card {
+            background: rgba(43, 41, 41, 0);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4.6px);
+            -webkit-backdrop-filter: blur(4.6px);
+            border: 1px solid rgba(43, 41, 41, 0.19);
+        }
+    </style>
+{% endblock content %}

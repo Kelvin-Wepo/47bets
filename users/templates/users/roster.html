@@ -1,0 +1,145 @@
+{% extends 'superapp/base.html' %}
+{% block title %}Roster{% endblock title %}
+
+{% block content %}
+<style>
+    /* Custom styling for the content section */
+    .content-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Align items to the top */
+        min-height: calc(100vh - 56px); /* Subtracting the navbar height */
+    }
+
+    /* Styling for the card container */
+    .card-container {
+        display: flex;
+        flex-wrap: wrap; /* Added flex-wrap to wrap cards on smaller screens */
+        justify-content: center; /* Center the cards horizontally */
+        gap: 20px; /* Added gap between cards */
+        width: 100%;
+        max-width: 1200px; /* Adjust the maximum width as needed */
+        margin-top: 30px; /* Top margin added to create space below the navbar */
+    }
+
+    /* Styling for the card */
+    .card {
+        flex-basis: calc(50% - 10px); /* Adjust the flex-basis to make the divs responsive */
+        background: rgba(43, 41, 41, 0);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4.6px);
+        -webkit-backdrop-filter: blur(4.6px);
+        border: 1px solid rgba(43, 41, 41, 0.19);
+        padding: 20px;
+        margin-bottom: 20px;
+        width: 100%; /* Added width to prevent text overflow on mobile */
+    }
+
+    /* Additional styles for player information */
+    .player-name {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .player-info {
+        margin-bottom: 5px;
+    }
+
+    /* Additional styles for player grid */
+    .player-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+    }
+
+    .player {
+        padding: 10px;
+    }
+
+    /* Styling for the horizontal line */
+    .line {
+        border: none;
+        border-top: 1px solid black;
+        margin-top: 10px;
+    }
+
+    /* Adjustments for mobile devices */
+    @media (max-width: 576px) {
+        .card-container {
+            flex-direction: column; /* Stack the cards vertically on mobile */
+            align-items: center; /* Center the cards horizontally on mobile */
+        }
+
+        .card {
+            flex-basis: 100%; /* Set the cards to take full width on mobile */
+        }
+    }
+
+    /* Center align the heading */
+    h3 {
+        text-align: center;
+    }
+
+</style>
+
+<div class="container-fluid content-section">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-container">
+                <!-- Home team card -->
+                <div class="card">
+                    <h3>{{ home_team }}</h3>
+                    <hr class="line">
+                    {% if home_team %}
+                    <div class="player-grid">
+                        {% for player in home_team.players.all %}
+                        <div class="player">
+                            <p class="player-name">{{ player.first_name }} {{ player.last_name }}</p>
+                            <p class="player-info">#{{ player.player_number }}</p>
+                            <p class="player-info">{{ player.state }}</p>
+                            <p class="player-info">Age: {{ player.age }}</p>
+                            <!-- Add more player information as needed -->
+                        </div>
+                        {% empty %}
+                        <p>No players available for the home team.</p>
+                        {% endfor %}
+                        {% if home_team.players.count|divisibleby:3 %}
+                        <div class="player"></div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p>Home team not found.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Away team card -->
+                <div class="card">
+                    <h3>{{ away_team }}</h3>
+                    <hr class="line">
+                    {% if away_team %}
+                    <div class="player-grid">
+                        {% for player in away_team.players.all %}
+                        <div class="player">
+                            <p class="player-name">{{ player.first_name }} {{ player.last_name }}</p>
+                            <p class="player-info">#{{ player.player_number }}</p>
+                            <p class="player-info">{{ player.state }}</p>
+                            <p class="player-info">Age: {{ player.age }}</p>
+                            <!-- Add more player information as needed -->
+                        </div>
+                        {% empty %}
+                        <p>No players available for the away team.</p>
+                        {% endfor %}
+                        {% if away_team.players.count|divisibleby:3 %}
+                        <div class="player"></div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p>Away team not found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

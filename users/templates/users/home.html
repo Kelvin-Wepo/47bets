@@ -1,0 +1,183 @@
+{% extends 'superapp/base.html' %}
+
+{% block title %}Homepage{% endblock title %}
+
+{% block content %}
+<style>
+    /* Custom styling for the content section */
+
+    /* Custom styling for the navbar */
+    .navbar {
+        background-color: yellow !important;
+        color: black;
+    }
+
+    /* Custom styling for the body */
+    body {
+        background-color: white !important;
+        color: black;
+    }
+
+
+
+    .content-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px;
+        min-height: 85vh;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4.6px);
+        -webkit-backdrop-filter: blur(4.6px);
+        border: 1px solid rgba(43, 41, 41, 0.19);
+    }
+
+    /* Styling for the tab content and navigation */
+    .tab-content {
+        width: 100%;
+        text-align: center;
+    }
+    .nav-tabs {
+        justify-content: center;
+    }
+    .nav-link {
+        color: black;
+    }
+    .nav-link:hover {
+        color: green;
+    }
+    .nav-link.active {
+        color: black;
+        background-color: yellow;
+    }
+
+    /* Styling for buttons and lines */
+    .btn-game {
+        color: black;
+        border: 1px solid green;
+        background-color: transparent;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: border-color 0.3s, color 0.3s;
+    }
+    .btn-game:hover {
+        border-color: white;
+        color: white;
+        text-decoration: none;
+    }
+    .line {
+        border: none;
+        border-top: 1px solid black;
+        margin-top: 10px;
+    }
+
+    /* Adjustments for mobile devices */
+    @media (max-width: 576px) {
+        .game-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container-fluid content-section">
+    <div class="row mt-4">
+        <div class="col-12">
+            <ul class="nav nav-tabs justify-content-center mt-4">
+                <!-- Past Games tab -->
+                <li class="nav-item nav-game">
+                    <a class="nav-link active" id="past-tab" data-toggle="tab" href="#past-games">Past Games</a>
+                </li>
+                <!-- Current Games tab -->
+                <li class="nav-item">
+                    <a class="nav-link" id="current-tab" data-toggle="tab" href="#current-games">Current Games</a>
+                </li>
+                <!-- Upcoming Games tab -->
+                <li class="nav-item">
+                    <a class="nav-link" id="upcoming-tab" data-toggle="tab" href="#upcoming-games">Upcoming Games</a>
+                </li>
+            </ul>
+            <div class="tab-content mt-4">
+                <!-- Past Games tab content -->
+                <div class="tab-pane fade show active my-div" id="past-games">
+                    {% for game in past_games %}
+                    <div class="game-details">
+                        <p>
+                            <!-- Display game details -->
+                            <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                            <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
+                            <span>Final Score: {{ game.score }}</span><br>
+                            <span>{{ game.commentary }}</span>
+                        </p>
+                        <div>
+                            <!-- View Players button -->
+                            <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                        </div>
+                        <hr class="line">
+                    </div>
+                    {% empty %}
+                    <p>No past games available</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Current Games tab content -->
+                <div class="tab-pane fade" id="current-games">
+                    {% if current_games %}
+                    {% for game in current_games %}
+                    <p>
+                        <!-- Display current game details -->
+                        <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                        <span>Odds: {{ game.home_team_odds }} vs {{ game.away_team_odds }}</span><br>
+                        <span>Starting Time: {{ game.datetime|time:"g:i A" }}</span><br>
+                        <span>End Time: {{ game.datetime_end|time:"g:i A" }}</span><br>
+                        <span>Weather: {{ game.weather }}</span>
+                        <div>
+                            <!-- View Players button -->
+                            <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                        </div>
+                    </p>
+                    <hr class="line">
+                    {% endfor %}
+                    {% else %}
+                    <p>There are no games scheduled at the moment.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Upcoming Games tab content -->
+                <div class="tab-pane fade" id="upcoming-games">
+                    {% for game in upcoming_games %}
+                    <div class="game-details">
+                        <p>
+                            <!-- Display upcoming game details -->
+                            <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                            <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
+                            <span>Time: {{ game.datetime|date:"g:i A" }}</span>
+                            <div>
+                                {% if not user.is_authenticated %}
+                                <!-- Login button for placing bets (if user is not authenticated) -->
+                                <a href={% url 'login' %} class="btn-game btn-white">Place Bet</a>
+                                {% else %}
+                                <!-- Place Bet button (if user is authenticated) -->
+                                <a href="{% url 'bets' %}" class="btn-game btn-white" name="place_bet">Place Bet</a>
+                                {% endif %}
+                                <!-- View Players button -->
+                                <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                            </div>
+                        </p>
+                        <hr class="line">
+                    </div>
+                    {% empty %}
+                    <p>No upcoming games available</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

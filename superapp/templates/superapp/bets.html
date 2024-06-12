@@ -1,0 +1,233 @@
+{% extends 'superapp/base.html' %}
+
+{% block title %}Bets{% endblock title %}
+
+{% block content %}
+<style>
+    /* Styling for the content section */
+    .content-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px;
+        min-height: 85vh;
+        background: rgba(43, 41, 41, 0);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4.6px);
+        -webkit-backdrop-filter: blur(4.6px);
+        border: 1px solid rgba(43, 41, 41, 0.19);
+    }
+    
+    /* Styling for the tab content */
+    .tab-content {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Styling for the navigation tabs */
+    .nav-tabs {
+        justify-content: center;
+    }
+    
+    /* Styling for the navigation links */
+    .nav-link {
+        color: white;
+    }
+    
+    /* Hover effect for the navigation links */
+    .nav-link:hover {
+        color: black;
+    }
+    
+    /* Styling for the active navigation link */
+    .nav-link.active {
+        color: black;
+        background-color: yellow;
+    }
+    
+    /* Styling for the button container */
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    /* Styling for the game buttons */
+    .btn-game {
+        color: black;
+        border: 1px solid black;
+        background-color: green;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: border-color 0.3s, color 0.3s;
+    }
+    
+    /* Hover effect for the game buttons */
+    .btn-game:hover {
+        border-color: yellow;
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Styling for the line separator */
+    .line {
+        border: none;
+        border-top: 1px solid black;
+        margin-top: 10px;
+    }
+    
+    /* Hover effect for the navigation links in the tab */
+    .nav-link[data-toggle="tab"]:hover {
+        background-color: yellow;
+        color: black;
+    }
+    
+    /* Styling for the transparent input fields */
+    .transparent-input {
+        background-color: #C2F0F7;
+        border: none;
+        border-bottom: 1px solid white;
+        color: black;
+    }
+    
+    /* Styling for the focus state of the transparent input fields */
+    .transparent-input:focus {
+        outline: none;
+    }
+    
+    /* Styling for the placeholder text in the transparent input fields */
+    .transparent-input::placeholder {
+        color: black;
+    }
+
+    /* Adjustments for mobile devices */
+    @media (max-width: 576px) {
+        .game-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container-fluid content-section">
+    <div class="row mt-4">
+        <div class="col-12">
+            <!-- Navigation tabs -->
+            <ul class="nav nav-tabs justify-content-center mt-4">
+                <li class="nav-item">
+                    <a class="nav-link" id="current-tab" data-toggle="tab" href="#current-games">Current Games</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="bets-tab" data-toggle="tab" href="#bets">Bets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="upcoming-tab" data-toggle="tab" href="#upcoming-games">Upcoming Games</a>
+                </li>
+            </ul>
+            
+            <div class="tab-content mt-4">
+                <!-- Current Games tab -->
+                <div class="tab-pane fade" id="current-games">
+                    {% if current_games %}
+                        {% for game in current_games %}
+                            <p>
+                                <!-- Display game details -->
+                                <span>{{ game.home_team }} vs {{ game.away_team }}</span><br>
+                                <span>Odds: {{ game.home_team_odds }} vs {{ game.away_team_odds }}</span><br>
+                                <span>Starting Time: {{ game.datetime|time:"g:i A" }}</span><br>
+                                <span>End Time: {{ game.datetime_end|time:"g:i A" }}</span><br>
+                                <span>Weather: {{ game.weather }}</span>
+                                <div>
+                                    <!-- View Players button -->
+                                    <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                                </div>
+                            </p>
+                            <hr class="line">
+                        {% endfor %}
+                    {% else %}
+                        <p>There are no games scheduled at the moment.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Bets tab -->
+                <div class="tab-pane fade" id="bets">
+                    {% if user_bets %}
+                        {% for bet in user_bets reversed %}
+                            {% if bet.result is None %}
+                                <form action="{% url 'bets' %}" method="POST">
+                                    {% csrf_token %}
+                                    <p>
+                                        <!-- Display bet details -->
+                                        <span>{{ bet.game.home_team }} vs {{ bet.game.away_team }}</span><br>
+                                        <span>Bet on: {{ bet.team.name }}</span><br><br>
+                                        <!-- Bet amount input field -->
+                                        <input type="number" name="bet_amount" value="{{ bet.bet_amount }}">
+                                        <input type="hidden" name="bet_id" value="{{ bet.id }}">
+                                        <!-- Update Bet and Cancel Bet buttons -->
+                                        <button type="submit" class="btn-game btn-white">Update Bet</button>
+                                        <button type="submit" class="btn-game btn-white" name="cancel_bet" value="true">Cancel Bet</button>
+                                    </p>
+                                    <hr class="line">
+                                </form>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No bets placed</p>
+                    {% endif %}
+                </div>
+
+                <!-- Upcoming Games tab -->
+                <div class="tab-pane show active" id="upcoming-games">
+                    {% for game in upcoming_games %}
+                        <div class="game-details">
+                            <p>
+                                <!-- Display game details -->
+                                <span>{{ game.home_team }} vs {{ game.away_team }}</span><br>
+                                <span>Odds: {{ game.home_team_odds }} vs {{ game.away_team_odds }}</span><br>
+                                <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
+                                <span>Time: {{ game.datetime|date:"g:i A" }}</span><br>
+                                <span>Weather: {{ game.weather }}</span>
+                                <div>
+                                    <!-- View Players button -->
+                                    <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                                </div>
+                                <div>
+                                    <!-- Bet form -->
+                                    <form method="POST" action="{% url 'bets' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="game_id" value="{{ game.id }}">
+                                        <div class="form-group"><br>
+                                            <label for="team_id">Select Team:</label>
+                                            <!-- Team selection dropdown -->
+                                            <select name="team_id" id="team_id" class="form-control transparent-input" required>
+                                                <option value="{{ game.home_team.id }}">{{ game.home_team }}</option>
+                                                <option value="{{ game.away_team.id }}">{{ game.away_team }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bet_amount">Bet Amount:</label>
+                                            <!-- Bet amount input field -->
+                                            <input type="number" name="bet_amount" id="bet_amount" class="form-control transparent-input" placeholder="Enter your bet amount" required>
+                                        </div>
+                                        <!-- Place Bet button -->
+                                        <button type="submit" class="btn-game btn-white">Place Bet</button>
+                                    </form>
+                                </div>
+                            </p>
+                            <hr class="line">
+                        </div>
+                    {% empty %}
+                        <p>No upcoming games available</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

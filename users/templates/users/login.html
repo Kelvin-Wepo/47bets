@@ -1,0 +1,81 @@
+{% extends 'superapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login Page{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <fieldset class="form-group">
+                                    {{ form|crispy }}
+                                </fieldset>
+                                <div class="form-group text-center">
+                                    <button class="btn" type="submit">Login</button>
+                                    
+                                </div>
+                            </form>
+                            <div class="border-top pt-3 text-center">
+                                <small class='text-muted'>
+                                    <a href={% url 'password_reset' %} class="link-unstyled">Forgot Password?</a>
+                                </small>
+                            </div>
+                            <div class="pb-3 text-center">
+                                <small>
+                                    <b>Don't have an account?</b>
+                                    <a href={% url 'register' %} class="link-unstyled">Sign Up</a>
+                                </small>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .link-unstyled {
+            color: white;
+            text-decoration: none;
+        }
+        .link-unstyled:hover {
+            color: black;
+            text-decoration: none;
+        }
+        .btn {
+            border: 0px;
+            color: white;
+            transition: background-color 0.3s, color 0.3s;
+        }
+    
+        .btn:hover {
+            border: 0px;
+            color: black;
+        }
+    
+        .btn:active {
+            transform: scale(0.95);
+        }
+          
+        .content-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+        }
+        .card {
+            background: rgba(43, 41, 41, 0);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4.6px);
+            -webkit-backdrop-filter: blur(4.6px);
+            border: 1px solid rgba(43, 41, 41, 0.19);
+        }
+    </style>
+{% endblock content %}

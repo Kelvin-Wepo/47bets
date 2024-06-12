@@ -1,0 +1,74 @@
+{% extends 'superapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register Page{% endblock title %}
+
+{% block content %}
+    <div class="content-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST" class="px-4">
+                                {% csrf_token %}
+                                <fieldset class="form-group">
+                                    {{ form|crispy }}
+                                </fieldset>
+                                <div class="form-group text-center">
+                                    <button class="btn" type="submit">Sign Up</button>
+                                </div>
+                            </form>
+                            <div class="border-top pt-3 text-center">
+                                <small>
+                                    <b>Already have an account?</b>
+                                    <a href={% url 'login' %} class="link-unstyled"><b>Sign In</b></a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .btn {
+            border: 0px;
+            color: white;
+            transition: background-color 0.3s, color 0.3s;
+        }
+    
+        .btn:hover {
+            border: 0px;
+            color: black;
+        }
+    
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .link-unstyled {
+            color: white;
+            text-decoration: none;
+        }
+        .link-unstyled:hover {
+            color: black;
+            text-decoration: none;
+        }
+        .content-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+            margin-top: 35px;
+        }
+        .card {
+            background: rgba(43, 41, 41, 0);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4.6px);
+            -webkit-backdrop-filter: blur(4.6px);
+            border: 1px solid rgba(43, 41, 41, 0.19);
+        }
+    </style>
+{% endblock content %}

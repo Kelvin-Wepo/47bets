@@ -1,0 +1,82 @@
+{% extends 'superapp/base.html' %}
+
+{% block title %}Game Details{% endblock title %}
+
+{% block content %}
+<style>
+    /* Custom styling for the content section */
+    .content-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px;
+        min-height: 85vh;
+        background: rgba(43, 41, 41, 0);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4.6px);
+        -webkit-backdrop-filter: blur(4.6px);
+        border: 1px solid rgba(43, 41, 41, 0.19);
+    }
+    .line {
+        border: none;
+        border-top: 1px solid black;
+        margin-top: 10px;
+    }
+
+    /* Styling for the game details */
+    .game-details {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Styling for the view players button */
+    .btn-game {
+        color: black;
+        border: 1px solid black;
+        background-color: transparent;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: border-color 0.3s, color 0.3s;
+    }
+    .btn-game:hover {
+        border-color: white;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Adjustments for mobile devices */
+    @media (max-width: 576px) {
+        .game-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+        }
+    }
+</style>
+
+<div class="container-fluid content-section">
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="game-details">
+                <h4>Game Details</h4>
+                <hr class="line">
+                <p>
+                    <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                    Starting Time: {{ game.datetime|time:"g:i A" }}<br>
+                    End Time: {{ game.datetime_end|time:"g:i A" }}<br>
+                    Score: {{ game.score }}<br>
+                    Commentary: {{ game.commentary }}<br>
+                    Weather: {{ game.weather }}<br>
+                    {{ game.home_team }} Odds: {{ game.home_team_odds }}<br>
+                    {{ game.away_team }} Odds: {{ game.away_team_odds }}
+                </p>
+                <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
