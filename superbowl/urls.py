@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-# from games.views import TeamAPIView, PlayerAPIView, GameAPIView, BetAPIView
+from games.views import TeamAPIView, PlayerAPIView, GameAPIView, BetAPIView
 from django.urls import path, include
 from users import views as user_views
 from users import views
@@ -24,7 +24,7 @@ from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
+    # path('', views.home, name='home'),
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
@@ -42,10 +42,10 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
          name='password_reset_complete'),
     # path('activate/<uidb64>/<token>/', views.activate_account, name='activate_account'),
-    # path('', include('superapp.urls')),
-    # path('teams/', TeamAPIView.as_view()),
-    # path('players/', PlayerAPIView.as_view()),
-    # path('games/', GameAPIView.as_view()),
-    # path('api/bets/', BetAPIView.as_view()),
-    # path('', include('bureau.urls')),
+    path('', include('superapp.urls')),
+    path('teams/', TeamAPIView.as_view()),
+    path('players/', PlayerAPIView.as_view()),
+    path('games/', GameAPIView.as_view()),
+    path('api/bets/', BetAPIView.as_view()),
+    path('', include('bureau.urls')),
 ]
