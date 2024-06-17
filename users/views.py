@@ -12,7 +12,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import F
-# from games.models import Bet
+from games.models import Bet
+from.models import Profile
+import africastalking
 
 
 # def register(request):
@@ -62,17 +64,48 @@ from django.db.models import F
 #         messages.error(request, 'Invalid activation link.')
 #         return redirect('register')
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegisterForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Your account has been created! You can now log in.')
+#             return redirect('login')
+#     else:
+#         form = UserRegisterForm()
+#     return render(request, 'users/register.html', {'form': form})
+
+
+# Initialize the Africa's Talking SDK
+username = "kwepo"
+api_key = "YOUR_AFRICAS_TALKING_API_KEY"
+africastalking.initialize(username, api_key)
+sms = africastalking.SMS
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            phone_number = form.cleaned_data.get('phone_number')  
+            username = user.username
+
+            # Save phone number to Profile model
+            Profile.objects.create(user=user, phone_number=phone_number)
+
+            # Send SMS
+            message = f"Hello {username}, You have successfully created an account with 47bets.com. Bet responsibly. Only 18yrs+ are eligible for betting with us."
+            try:
+                response = sms.send(message, [phone_number])
+                print(response)
+            except Exception as e:
+                print(f"Error sending SMS: {e}")
+
             messages.success(request, 'Your account has been created! You can now log in.')
             return redirect('login')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
-
 
 @login_required
 def profile(request):
@@ -90,6 +123,6 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-def home(request):
-    return render(request, 'users/home.html')
+# def home(request):
+#     return render(request, 'users/home.html')
 
