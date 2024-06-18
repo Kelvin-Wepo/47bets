@@ -48,4 +48,5 @@ urlpatterns = [
     # path('games/', GameAPIView.as_view()),
     # path('api/bets/', BetAPIView.as_view()),
     # path('', include('bureau.urls')),
+    path('payment/', include('payment.urls'))
 ]
