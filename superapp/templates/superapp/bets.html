@@ -198,7 +198,7 @@
                                 </div>
                                 <div>
                                     <!-- Bet form -->
-                                    <form method="POST" action="{% url 'bets' %}">
+                                    {% comment %} <form method="POST" action="{% url 'bets' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="game_id" value="{{ game.id }}">
                                         <div class="form-group"><br>
@@ -216,7 +216,35 @@
                                         </div>
                                         <!-- Place Bet button -->
                                         <button type="submit" class="btn-game btn-white">Place Bet</button>
-                                    </form>
+                                    </form> {% endcomment %}
+
+    <!-- Bet form -->
+    <form method="POST" action="{% url 'pay_mpesa' %}">
+        {% csrf_token %}
+        <input type="hidden" name="game_id" value="{{ game.id }}">
+        <div class="form-group"><br>
+            <label for="team_id">Select Team:</label>
+            <!-- Team selection dropdown -->
+            <select name="team_id" id="team_id" class="form-control transparent-input" required>
+                <option value="{{ game.home_team.id }}">{{ game.home_team }}</option>
+                <option value="{{ game.away_team.id }}">{{ game.away_team }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bet_amount">Bet Amount:</label>
+            <!-- Bet amount input field -->
+            <input type="number" name="amount" id="bet_amount" class="form-control transparent-input" placeholder="Enter your bet amount" required>
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <!-- Phone number input field for M-Pesa payment -->
+            <input type="text" name="phone_number" id="phone_number" class="form-control transparent-input" placeholder="Enter your phone number" required>
+        </div>
+        <!-- Place Bet button -->
+        <button type="submit" class="btn-game btn-white">Place Bet</button>
+    </form>
+
+
                                 </div>
                             </p>
                             <hr class="line">
