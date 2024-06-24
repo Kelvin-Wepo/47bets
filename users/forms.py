@@ -30,3 +30,5 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'phone_number', 'password1', 'password2']  # Include phone number
 
+class OTPVerificationForm(forms.Form):
+    otp = forms.CharField(max_length=6, required=True, label='Enter OTP')

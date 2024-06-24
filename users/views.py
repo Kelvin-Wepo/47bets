@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm
@@ -15,6 +15,9 @@ from django.db.models import F
 from games.models import Bet
 from.models import Profile
 import africastalking
+import math, random
+from django.contrib import messages
+from .forms import OTPVerificationForm
 
 
 # def register(request):
@@ -77,10 +80,17 @@ import africastalking
 
 
 # Initialize the Africa's Talking SDK
-username = "kwepo"
-api_key = "YOUR_AFRICAS_TALKING_API_KEY"
+username = "USERNAME"
+api_key = "AFRICASTALKING_API_KEY"
 africastalking.initialize(username, api_key)
 sms = africastalking.SMS
+
+def generate_otp():
+    digits = "0123456789"
+    OTP = ""
+    for i in range(4):
+        OTP += digits[math.floor(random.random() * 10)]
+    return OTP
 
 def register(request):
     if request.method == 'POST':
@@ -90,22 +100,57 @@ def register(request):
             phone_number = form.cleaned_data.get('phone_number')  
             username = user.username
 
+            otp = generate_otp()
+            print(otp)
+
             # Save phone number to Profile model
-            Profile.objects.create(user=user, phone_number=phone_number)
+           # Save phone number and OTP to Profile model
+            profile = Profile.objects.create(user=user, phone_number=phone_number, otp=otp)
 
-            # Send SMS
-            message = f"Hello {username}, You have successfully created an account with 47bets.com. Bet responsibly. Only 18yrs+ are eligible for betting with us."
-            try:
-                response = sms.send(message, [phone_number])
-                print(response)
-            except Exception as e:
-                print(f"Error sending SMS: {e}")
+            # Send OTP via SMS
+            message = f"Your OTP for signup is {otp}"
+            response = sms.send(message, [phone_number])
+            print(response)  # Print the response for debugging purposes
 
-            messages.success(request, 'Your account has been created! You can now log in.')
-            return redirect('login')
+            # Inform the user to check their SMS for OTP
+            messages.info(request, 'An OTP has been sent to your phone number. Please verify your account.')
+
+            # Redirect to OTP verification page
+            return redirect('otp_verify', user_id=user.id)
+
+            # # Send SMS
+            # message = f"Hello {username}, You have successfully created an account with 47bets.com. Bet responsibly. Only 18yrs+ are eligible for betting with us."
+            # try:
+            #     response = sms.send(message, [phone_number])
+            #     print(response)
+            # except Exception as e:
+            #     print(f"Error sending SMS: {e}")
+
+            # messages.success(request, 'Your account has been created! You can now log in.')
+            # return redirect('login')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
+def otp_verify(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    profile = get_object_or_404(Profile, user=user)
+
+    if request.method == 'POST':
+        form = OTPVerificationForm(request.POST)
+        if form.is_valid():
+            otp = form.cleaned_data.get('otp')
+            if otp == profile.otp:
+                profile.otp = ''  # Clear the OTP after successful verification
+                profile.save()
+                messages.success(request, 'Your account has been verified! You can now log in.')
+                return redirect('login')
+            else:
+                messages.error(request, 'Invalid OTP. Please try again.')
+    else:
+        form = OTPVerificationForm()
+
+    return render(request, 'users/otp_verify.html', {'form': form})
 
 @login_required
 def profile(request):

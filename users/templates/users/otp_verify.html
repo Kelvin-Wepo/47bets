@@ -1,0 +1,11 @@
+<!-- templates/users/otp_verify.html -->
+{% extends "users/base.html" %}
+
+{% block content %}
+  <h2>Verify OTP</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Verify</button>
+  </form>
+{% endblock %}
