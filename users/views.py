@@ -18,6 +18,7 @@ import africastalking
 import math, random
 from django.contrib import messages
 from .forms import OTPVerificationForm
+from django.conf import Settings
 
 
 # def register(request):
@@ -80,9 +81,7 @@ from .forms import OTPVerificationForm
 
 
 # Initialize the Africa's Talking SDK
-username = "USERNAME"
-api_key = "AFRICASTALKING_API_KEY"
-africastalking.initialize(username, api_key)
+africastalking.initialize(settings.USERNAME, settings.API_KEY)
 sms = africastalking.SMS
 
 def generate_otp():
