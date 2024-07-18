@@ -83,7 +83,6 @@ from django.conf import Settings
 # Initialize the Africa's Talking SDK
 africastalking.initialize(settings.USERNAME, settings.API_KEY)
 sms = africastalking.SMS
-
 def generate_otp():
     digits = "0123456789"
     OTP = ""
