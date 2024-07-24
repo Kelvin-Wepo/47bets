@@ -61,6 +61,10 @@ The application provides the following API endpoints for external access:
 - `/games/`: Get a list of all games.
 - `/api/bets/`: API for managing user bets.
 
+
+  # Images
+  [text](../../..)
+
 # Contributing
 
 Contributions to this project are welcome. To contribute:
