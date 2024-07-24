@@ -1,24 +1,24 @@
 {% extends 'superapp/base.html' %}
+{% load static %}
 
 {% block title %}Homepage{% endblock title %}
 
 {% block content %}
 <style>
     /* Custom styling for the content section */
-
-    /* Custom styling for the navbar */
     .navbar {
-        background-color: yellow !important;
+        background-color: #1e2329;
         color: black;
     }
 
-    /* Custom styling for the body */
     body {
-        background-color: green!important;
+        background-color: #201E43;
         color: black;
     }
 
-
+    .container-fluid {
+        padding: 0;
+    }
 
     .content-section {
         display: flex;
@@ -34,26 +34,28 @@
         border: 1px solid rgba(43, 41, 41, 0.19);
     }
 
-    /* Styling for the tab content and navigation */
     .tab-content {
         width: 100%;
         text-align: center;
     }
+
     .nav-tabs {
         justify-content: center;
     }
+
     .nav-link {
         color: black;
     }
+
     .nav-link:hover {
         color: green;
     }
+
     .nav-link.active {
         color: black;
         background-color: yellow;
     }
 
-    /* Styling for buttons and lines */
     .btn-game {
         color: black;
         border: 1px solid green;
@@ -63,18 +65,19 @@
         text-decoration: none;
         transition: border-color 0.3s, color 0.3s;
     }
+
     .btn-game:hover {
         border-color: white;
         color: green;
         text-decoration: none;
     }
+
     .line {
         border: none;
         border-top: 1px solid black;
         margin-top: 10px;
     }
 
-    /* Adjustments for mobile devices */
     @media (max-width: 576px) {
         .game-details {
             display: flex;
@@ -84,100 +87,326 @@
             padding: 10px;
         }
     }
+
+    .sidebar {
+        background-color: #1e2329;
+        color: white;
+        height: 100vh;
+        padding: 15px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar ul li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .sidebar ul li i {
+        margin-right: 10px;
+    }
+
+    .sidebar ul li:hover {
+        background-color: #343a40;
+        cursor: pointer;
+    }
+
+    .right-sidebar {
+        background-color: #e9ecef;
+        padding: 15px;
+        height: 100vh;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar, .right-sidebar {
+        transition: all 0.3s;
+        overflow-x: hidden;
+    }
+
+    .sidebar.collapsed {
+        width: 60px;
+    }
+
+    .right-sidebar.collapsed {
+        width: 60px;
+    }
+
+    .sidebar.collapsed span, .right-sidebar.collapsed .registration-form {
+        display: none;
+    }
+
+    .sidebar-toggle, .right-sidebar-toggle {
+        cursor: pointer;
+        padding: 10px;
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+    }
+
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .registration-form h4 {
+        margin-bottom: 20px;
+    }
+
+    .registration-form form {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .registration-form .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .registration-form .form-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .registration-form .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .registration-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #343a40;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .registration-form button:hover {
+        background-color: #1e2329;
+    }
+
+    #gameCarousel {
+        width: 100%;
+        height: 20vh; /* 20% of the viewport height */
+        overflow: hidden;
+        margin-bottom: 20px; /* Add some space below the carousel */
+    }
+
+    #gameCarousel .carousel-inner {
+        height: 100%;
+    }
+
+    #gameCarousel .carousel-item {
+        height: 100%;
+    }
+
+    #gameCarousel .carousel-item img {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    #gameCarousel .carousel-control-prev,
+    #gameCarousel .carousel-control-next {
+        width: 5%;
+    }
+
+    #gameCarousel .carousel-control-prev-icon,
+    #gameCarousel .carousel-control-next-icon {
+        width: 30px;
+        height: 30px;
+    }
 </style>
 
-<div class="container-fluid content-section">
-    <div class="row mt-4">
-        <div class="col-12">
-            <ul class="nav nav-tabs justify-content-center mt-4">
-                <!-- Past Games tab -->
-                <li class="nav-item nav-game">
-                    <a class="nav-link active" id="past-tab" data-toggle="tab" href="#past-games">Past Games</a>
-                </li>
-                <!-- Current Games tab -->
-                <li class="nav-item">
-                    <a class="nav-link" id="current-tab" data-toggle="tab" href="#current-games">Current Games</a>
-                </li>
-                <!-- Upcoming Games tab -->
-                <li class="nav-item">
-                    <a class="nav-link" id="upcoming-tab" data-toggle="tab" href="#upcoming-games">Upcoming Games</a>
-                </li>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-md-2 sidebar" id="leftSidebar">
+            <div class="sidebar-toggle" id="leftSidebarToggle">☰</div>
+            <ul>
+                <li><i class="fas fa-boxing-glove"></i> Boxing</li>
+                <li><i class="fas fa-table-tennis"></i> Table Tennis</li>
+                <li><i class="fas fa-football-ball"></i> Aussie Rules</li>
+                <li><i class="fas fa-cricket"></i> Cricket</li>
+                <li><i class="fas fa-rugby-ball"></i> Rugby</li>
+                <li><i class="fas fa-basketball-ball"></i> Basketball</li>
+                <li><i class="fas fa-volleyball-ball"></i> Volleyball</li>
+                <li><i class="fas fa-water"></i> Waterpolo</li>
+                <li><i class="fas fa-bullseye"></i> Darts</li>
+                <li><i class="fas fa-baseball-ball"></i> Baseball</li>
+                <li><i class="fas fa-tennis-ball"></i> Tennis</li>
+                <li><i class="fas fa-hand-paper"></i> Handball</li>
+                <li><i class="fas fa-hockey-puck"></i> Hockey</li>
+                <li><i class="fas fa-futbol"></i> Soccer</li>
             </ul>
-            <div class="tab-content mt-4">
-                <!-- Past Games tab content -->
-                <div class="tab-pane fade show active my-div" id="past-games">
-                    {% for game in past_games %}
-                    <div class="game-details">
-                        <p>
-                            <!-- Display game details -->
-                            <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
-                            <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
-                            <span>Final Score: {{ game.score }}</span><br>
-                            <span>{{ game.commentary }}</span>
-                        </p>
-                        <div>
-                            <!-- View Players button -->
-                            <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+        </div>
+
+        <!-- Content Section -->
+        <div class="col-md-8" id="mainContent">
+            <div class="container-fluid content-section">
+                
+                <div class="row mt-4">
+                     <div id="gameCarousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="{% static 'images/bundesliga odds.jpg' %}" class="d-block w-100" alt="...">
                         </div>
-                        <hr class="line">
+                        <div class="carousel-item">
+                            <img src="{% static 'images/EPL Odds.jpg' %}" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="{% static 'images/ligue1 odds.png' %}" class="d-block w-100" alt="...">
+                        </div>
                     </div>
-                    {% empty %}
-                    <p>No past games available</p>
-                    {% endfor %}
+                    <a class="carousel-control-prev" href="#gameCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#gameCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
-
-                <!-- Current Games tab content -->
-                <div class="tab-pane fade" id="current-games">
-                    {% if current_games %}
-                    {% for game in current_games %}
-                    <p>
-                        <!-- Display current game details -->
-                        <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
-                        <span>Odds: {{ game.home_team_odds }} vs {{ game.away_team_odds }}</span><br>
-                        <span>Starting Time: {{ game.datetime|time:"g:i A" }}</span><br>
-                        <span>End Time: {{ game.datetime_end|time:"g:i A" }}</span><br>
-                        <span>Weather: {{ game.weather }}</span>
-                        <div>
-                            <!-- View Players button -->
-                            <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
-                        </div>
-                    </p>
-                    <hr class="line">
-                    {% endfor %}
-                    {% else %}
-                    <p>There are no games scheduled at the moment.</p>
-                    {% endif %}
-                </div>
-
-                <!-- Upcoming Games tab content -->
-                <div class="tab-pane fade" id="upcoming-games">
-                    {% for game in upcoming_games %}
-                    <div class="game-details">
-                        <p>
-                            <!-- Display upcoming game details -->
-                            <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
-                            <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
-                            <span>Time: {{ game.datetime|date:"g:i A" }}</span>
-                            <div>
-                                {% if not user.is_authenticated %}
-                                <!-- Login button for placing bets (if user is not authenticated) -->
-                                <a href={% url 'login' %} class="btn-game btn-white">Place Bet</a>
-                                {% else %}
-                                <!-- Place Bet button (if user is authenticated) -->
-                                <a href="{% url 'bets' %}" class="btn-game btn-white" name="place_bet">Place Bet</a>
-                                {% endif %}
-                                <!-- View Players button -->
-                                <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                    <div class="col-12">
+                        <ul class="nav nav-tabs justify-content-center mt-4">
+                            
+                            <!-- Past Games tab -->
+                            <li class="nav-item nav-game">
+                                <a class="nav-link active" id="past-tab" data-toggle="tab" href="#past-games">Past Games</a>
+                            </li>
+                            <!-- Current Games tab -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="current-tab" data-toggle="tab" href="#current-games">Current Games</a>
+                            </li>
+                            <!-- Upcoming Games tab -->
+                            <li class="nav-item">
+                                <a class="nav-link" id="upcoming-tab" data-toggle="tab" href="#upcoming-games">Upcoming Games</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-4">
+                            <!-- Past Games tab content -->
+                            <div class="tab-pane fade show active my-div" id="past-games">
+                                {% for game in past_games %}
+                                <div class="game-details">
+                                    <p>
+                                        <!-- Display game details -->
+                                        <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                                        <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
+                                        <span>Final Score: {{ game.score }}</span><br>
+                                        <span>{{ game.commentary }}</span>
+                                    </p>
+                                    <div>
+                                        <!-- View Players button -->
+                                        <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                                    </div>
+                                    <hr class="line">
+                                </div>
+                                {% empty %}
+                                <p>No past games available</p>
+                                {% endfor %}
                             </div>
-                        </p>
-                        <hr class="line">
+
+                            <!-- Current Games tab content -->
+                            <div class="tab-pane fade" id="current-games">
+                                {% if current_games %}
+                                {% for game in current_games %}
+                                <p>
+                                    <!-- Display current game details -->
+                                    <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                                    <span>Odds: {{ game.home_team_odds }} vs {{ game.away_team_odds }}</span><br>
+                                    <span>Starting Time: {{ game.datetime|time:"g:i A" }}</span><br>
+                                    <span>End Time: {{ game.datetime_end|time:"g:i A" }}</span><br>
+                                    <span>Weather: {{ game.weather }}</span>
+                                    <div>
+                                        <!-- View Players button -->
+                                        <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                                    </div>
+                                </p>
+                                <hr class="line">
+                                {% endfor %}
+                                {% else %}
+                                <p>No current games available</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Upcoming Games tab content -->
+                            <div class="tab-pane fade" id="upcoming-games">
+                                {% for game in upcoming_games %}
+                                <div class="game-details">
+                                    <p>
+                                        <!-- Display upcoming game details -->
+                                        <strong>{{ game.home_team }} vs {{ game.away_team }}</strong><br>
+                                        <span>Date: {{ game.datetime|date:"d.m.Y" }}</span><br>
+                                        <span>Starting Time: {{ game.datetime|time:"H:i" }}</span><br>
+                                        <span>Weather: {{ game.weather }}</span>
+                                    </p>
+                                    <div>
+                                        <!-- View Players button -->
+                                        <a href="/roster?home_team={{ game.home_team }}&away_team={{ game.away_team }}" class="btn-game btn-white">View Players</a>
+                                    </div>
+                                    <hr class="line">
+                                </div>
+                                {% empty %}
+                                <p>No upcoming games available</p>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                    {% empty %}
-                    <p>No upcoming games available</p>
-                    {% endfor %}
                 </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="col-md-2 right-sidebar" id="rightSidebar">
+            <div class="right-sidebar-toggle" id="rightSidebarToggle">☰</div>
+            <!-- Registration Form -->
+            <div class="registration-form">
+                <h4>Register for Updates</h4>
+                <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function toggleSidebar(sidebarId, toggleButtonId) {
+            var sidebar = document.getElementById(sidebarId);
+            var toggleButton = document.getElementById(toggleButtonId);
+
+            toggleButton.addEventListener("click", function() {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        toggleSidebar("leftSidebar", "leftSidebarToggle");
+        toggleSidebar("rightSidebar", "rightSidebarToggle");
+    });
+</script>
+{% endblock content %}
