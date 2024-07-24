@@ -279,6 +279,35 @@
     object-fit: cover;
 }
 
+.partners-container {
+    background-color: #1a2641;
+    color: white;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .partners-section {
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: normal;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .partner-logo {
+    height: 40px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+  }
+
 </style>
 
 </head>
@@ -330,15 +359,15 @@
             <img src="{% static 'images/logo.png' %}" alt="47BETS Logo" class="img-fluid shadow-sm" style="max-height: 60px; max-width: 120px; border-radius: 30px;">
         </div>
         <div class="navbar-links">
-            <a href="#">Home</a>
-            <a href="#">Bets</a>
+            <a class="nav-link nav-transition" href="{% url 'home' %}"><b>Home</b></a>
+            <a class="nav-link nav-transition" href="{% url 'bets' %}"><b>Bets</b></a>
             <a href="#">47 League</a>
             <a href="#" class="casino">Casino <span class="new">NEW!</span></a>
             <a href="#">Virtuals</a>
             <a href="#">Jackpots</a>
-            <a href="#">eSports</a>
+            <a class="nav-link nav-transition" href="{% url 'bureau:match' %}"><b>Match</b></a>
             <a href="#">Lucky Numbers</a>
-            <a href="#">More</a>
+            <a class="nav-link nav-transition" href="{% url 'profile' %}"><b>Profile</b></a>
         </div>
         <div class="navbar-actions">
             <input type="text" placeholder="Mobile">
@@ -356,25 +385,25 @@
     </ol>
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="{% static 'images/bet2.jpg' %}" class="d-block w-100" alt="Slide 1">
+        <img src="{% static 'images/banner2.jpg'%}" class="d-block w-100" alt="Slide 1">
         <div class="carousel-caption d-none d-md-block">
-          <h5>Welcome to 47bets</h5>
-          <p>Your premier betting destination</p>
+          {% comment %} <h5>Welcome to 47bets</h5>
+          <p>Your premier betting destination</p> {% endcomment %}
           <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Join Now</a>
         </div>
       </div>
       <div class="carousel-item">
-        <img src="{% static 'images/bet1.jpeg' %}" class="d-block w-100" alt="Slide 2">
+        <img src="{% static 'images/banner3a.jpg'%}" class="d-block w-100" alt="Slide 2">
         <div class="carousel-caption d-none d-md-block">
-          </h5>Exciting Sports Events</h5>
-          <p>Bet on your favorite teams</p>
+          {% comment %} </h5>Exciting Sports Events</h5>
+          <p>Bet on your favorite teams</p> {% endcomment %}
         </div>
       </div>
       <div class="carousel-item">
-        <img src="{% static 'images/foot.jpg' %}" class="d-block w-100" alt="Slide 3">
+        <img src="{% static 'images/banner4a.png' %}" class="d-block w-100" alt="Slide 3">
         <div class="carousel-caption d-none d-md-block">
-          <h5>Big Wins Await</h5>
-          <p>Join thousands of winners</p>
+          {% comment %} <h5>Big Wins Await</h5>
+          <p>Join thousands of winners</p> {% endcomment %}
           <a href="{% url 'login' %}" class="btn btn-warning btn-lg">Log In</a>
         </div>
       </div>
@@ -402,12 +431,38 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    <div class="partners-container">
+        <div class="partners-section">
+          <h3>Sports partners:</h3>
+          <div class="logo-container">
+            <img src="{% static 'images/SerieA logo.jpg'%}" alt="Serie A" class="partner-logo">
+            <img src="{% static 'images/psg,logo.jpg'%}" alt="PSG" class="partner-logo">
+            <img src="{% static 'images/SerieA logo.jpg'%}" alt="LaLiga" class="partner-logo">
+            <img src="{% static 'images/barcelona.jpg'%}" alt="Barcelona" class="partner-logo">
+            <img src="{% static 'images/CAFlogo.png'%}" alt="CAF" class="partner-logo">
+            <img src="{% static 'images/volleyball.png'%}" alt="Volleyball World" class="partner-logo">
+            <img src="{% static 'images/lillestorm.png'%}" alt="Lillestrom" class="partner-logo">
+          </div>
+        </div>
+        
+        <div class="partners-section">
+          <h3>Esports partners:</h3>
+          <div class="logo-container">
+            <img src="{% static 'images/esl logo.jpg'%}" alt="ESL" class="partner-logo">
+            <img src="{% static 'images/mbr logo.jpg'%}" alt="MBR" class="partner-logo">
+            <img src="{% static 'images/beastcoast.png'%}" alt="Beastcoast" class="partner-logo">
+          </div>
+        </div>
+      </div>
+
+
     {% comment %} footer {% endcomment %}
 
 <footer class="site-footer">
   <div class="footer-container">
       <div class="footer-column">
-          <h3>47BETS</h3>
+        <img src="{% static 'images/logo.png' %}" alt="47BETS Logo" class="img-fluid shadow-sm" style="max-height: 60px; max-width: 120px; border-radius: 30px;">
           <p>P.O.BOX 25675-00100 NAIROBI</p>
           <p>SportPesa News</p>
           <p>Need help? Contact us</p>
