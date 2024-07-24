@@ -157,11 +157,14 @@ LOGIN_URL = 'login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-USERNAME = config('USERNAME')
-API_KEY = config('API_KEY')
+# USERNAME = config('USERNAME')
+# API_KEY = config('API_KEY')
 
 
-import os
+API_KEY ='atsk_4059a1fbccd94fed5bc3bff4e36585efd4f4676614fef1b58fbcbc6c437421635cdcb304'
+USERNAME ='Kwepo'
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 LOGGING = {
