@@ -83,6 +83,7 @@ from django.conf import Settings
 # Initialize the Africa's Talking SDK
 africastalking.initialize(settings.USERNAME, settings.API_KEY)
 sms = africastalking.SMS
+sender=""
 def generate_otp():
     digits = "0123456789"
     OTP = ""
@@ -107,7 +108,7 @@ def register(request):
 
             # Send OTP via SMS
             message = f"Your OTP for signup is {otp}"
-            response = sms.send(message, [phone_number])
+            response = sms.send(message, [phone_number], sender)
             print(response)  # Print the response for debugging purposes
 
             # Inform the user to check their SMS for OTP
